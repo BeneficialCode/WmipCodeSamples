@@ -1,0 +1,9 @@
+#pragma once
+#include <ntddk.h>
+
+DRIVER_DISPATCH IoAllocateMdlTest, IoFreeMdlTest, KmemTouchTest, 
+LockPagFunTest,MdlForUserBufferTest, MmAllocateMappingAddressTest,
+MmAllocatePagesForMdlExTest, MmFreeMappingAddressTest,MmFreePagesFromMdlTest, 
+MmMapLockedPagesSpecifyCacheTest,MmMapLockedPagesWithReservedMappingTest,MmProbeAndLockPagesTest, 
+MmUnlockPagesTest, MmUnmapLockedPagesTest,MmUnmapReservedMappingTest, 
+PageableFunction, UnlockPagFunTest;
