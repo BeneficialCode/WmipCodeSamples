@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.31911.196
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KrnlAllocs", "KrnlAllocs\KrnlAllocs.vcxproj", "{CD110D6B-2F84-4C39-8A36-A9BBA2A86D70}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MemTests", "MemTests\MemTests.vcxproj", "{F44FAE01-07C7-463C-A141-9F66630BC69D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -41,6 +43,18 @@ Global
 		{CD110D6B-2F84-4C39-8A36-A9BBA2A86D70}.Release|x86.ActiveCfg = Release|Win32
 		{CD110D6B-2F84-4C39-8A36-A9BBA2A86D70}.Release|x86.Build.0 = Release|Win32
 		{CD110D6B-2F84-4C39-8A36-A9BBA2A86D70}.Release|x86.Deploy.0 = Release|Win32
+		{F44FAE01-07C7-463C-A141-9F66630BC69D}.Debug|ARM.ActiveCfg = Debug|Win32
+		{F44FAE01-07C7-463C-A141-9F66630BC69D}.Debug|ARM64.ActiveCfg = Debug|Win32
+		{F44FAE01-07C7-463C-A141-9F66630BC69D}.Debug|x64.ActiveCfg = Debug|x64
+		{F44FAE01-07C7-463C-A141-9F66630BC69D}.Debug|x64.Build.0 = Debug|x64
+		{F44FAE01-07C7-463C-A141-9F66630BC69D}.Debug|x86.ActiveCfg = Debug|Win32
+		{F44FAE01-07C7-463C-A141-9F66630BC69D}.Debug|x86.Build.0 = Debug|Win32
+		{F44FAE01-07C7-463C-A141-9F66630BC69D}.Release|ARM.ActiveCfg = Release|Win32
+		{F44FAE01-07C7-463C-A141-9F66630BC69D}.Release|ARM64.ActiveCfg = Release|Win32
+		{F44FAE01-07C7-463C-A141-9F66630BC69D}.Release|x64.ActiveCfg = Release|x64
+		{F44FAE01-07C7-463C-A141-9F66630BC69D}.Release|x64.Build.0 = Release|x64
+		{F44FAE01-07C7-463C-A141-9F66630BC69D}.Release|x86.ActiveCfg = Release|Win32
+		{F44FAE01-07C7-463C-A141-9F66630BC69D}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

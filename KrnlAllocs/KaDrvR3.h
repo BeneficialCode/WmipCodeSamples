@@ -22,7 +22,15 @@ Copyright (c), 2012 by Enrico Martignetti - All rights reserved.
 
 #define MEMTEST_DEVICE 0x8000
 
-#define DRIVER_TAG 'KATS'
+#define MAP_REGION_TAG 'KATS'
+
+#define DRV_NAME	"KernelAllocs"
+
+#define DRV_IMAGE	L"krnlAllocs.sys"
+
+#define DRV_SVC_NAME L"krnlallocs"
+
+#define DRV_DEVICE_NAME L"MemTestDevice"
 
 #define IOCTL_MEMTEST_MDL_FOR_USER_BUFFER CTL_CODE(MEMTEST_DEVICE,\
 	0x800,METHOD_BUFFERED,FILE_ANY_ACCESS)
@@ -76,19 +84,19 @@ Copyright (c), 2012 by Enrico Martignetti - All rights reserved.
 	0x810,METHOD_BUFFERED,FILE_ANY_ACCESS)
 
 enum class AccessType{
-	ATRead,
-	ATWrite
+	Read,
+	Write
 };
 
 enum class AccessMode {
-	AMKernel,
-	AmUser
+	Kernel,
+	User
 };
 
 enum class CacheType {
-	CTNonCached,
-	CTCahced,
-	CTWriteCombined
+	NonCached,
+	Cached,
+	WriteCombined
 };
 
 struct AllocaMdl {
@@ -106,7 +114,7 @@ struct AllPagesForMdl {
 	PVOID HighAddress;
 	ULONGLONG SkipBytes;
 	SIZE_T TotalBytes;
-	ULONG CacheType;
+	CacheType CacheType;
 	ULONG Flags;
 };
 
@@ -118,9 +126,15 @@ struct KmemTouch {
 
 struct MapLockPages {
 	PVOID Mdl;
-	ULONG AccessMode;
-	ULONG CacheType;
+	AccessMode AccessMode;
+	CacheType CacheType;
 	PVOID BaseAddress;
+};
+
+struct MapLPagesResMap {
+	PVOID MappingAddress;
+	PVOID Mdl;
+	CacheType CacheType;
 };
 
 struct MdlForUserBuffer {

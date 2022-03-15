@@ -7,8 +7,6 @@
 DRIVER_UNLOAD DriverUnload;
 DRIVER_DISPATCH DriverCreate, DriverClose, DriverDeviceControl;
 
-NTSTATUS CompleteIrp(PIRP Irp, NTSTATUS status = STATUS_SUCCESS, ULONG info = 0);
-
 struct DeviceExtension {
 	PDEVICE_OBJECT DeviceObject;
 	UNICODE_STRING SymName;
@@ -21,13 +19,15 @@ void DriverUnload(_In_ PDRIVER_OBJECT DriverObject) {
 	// delete device object
 	IoDeleteDevice(DriverObject->DeviceObject);
 
-	Log(LogLevel::Information, "Driver unloaded.\n");
+	LogInfo("Driver unloaded.\n");
 }
 
 extern "C" NTSTATUS
 DriverEntry(_In_ PDRIVER_OBJECT DriverObject, _In_ PUNICODE_STRING RegistryPath) {
+	UNREFERENCED_PARAMETER(RegistryPath);
+
 	NTSTATUS status;
-	Log(LogLevel::Information, "driver, compiled %s %s\n", __DATE__, __TIME__);
+	LogInfo("driver, compiled %s %s\n", __DATE__, __TIME__);
 	
 	DriverObject->DriverUnload = DriverUnload;
 	DriverObject->MajorFunction[IRP_MJ_CREATE] = DriverCreate;
@@ -66,7 +66,7 @@ DriverEntry(_In_ PDRIVER_OBJECT DriverObject, _In_ PUNICODE_STRING RegistryPath)
 		return status;
 	}
 
-	Log(LogLevel::Information, "driver successfully loaded.\n");
+	LogInfo("driver successfully loaded.\n");
 
 	return STATUS_SUCCESS;
 }
@@ -77,7 +77,7 @@ NTSTATUS DriverCreate(PDEVICE_OBJECT DeviceObject, PIRP Irp) {
 
 	NTSTATUS status = CompleteIrp(Irp);
 
-	Log(LogLevel::Information, "Device opened\n");
+	LogInfo("Device opened\n");
 
 	return status;
 }
@@ -88,20 +88,14 @@ NTSTATUS DriverClose(PDEVICE_OBJECT DeviceObject, PIRP Irp) {
 
 	NTSTATUS status = CompleteIrp(Irp);
 
-	Log(LogLevel::Information, "Device closed\n");
+	LogInfo("Device closed\n");
 
-	return status;
-}
-
-NTSTATUS CompleteIrp(PIRP Irp, NTSTATUS status, ULONG info){
-	Irp->IoStatus.Status = status;
-	Irp->IoStatus.Information = info;
-	IoCompleteRequest(Irp, IO_NO_INCREMENT);
 	return status;
 }
 
 _Use_decl_annotations_
 NTSTATUS DriverDeviceControl(PDEVICE_OBJECT DeviceObject, PIRP Irp) {
+	UNREFERENCED_PARAMETER(DeviceObject);
 	NTSTATUS status = STATUS_SUCCESS;
 
 	const auto& dic = IoGetCurrentIrpStackLocation(Irp)->Parameters.DeviceIoControl;
@@ -110,71 +104,83 @@ NTSTATUS DriverDeviceControl(PDEVICE_OBJECT DeviceObject, PIRP Irp) {
 	switch (dic.IoControlCode)
 	{
 	case IOCTL_MEMTEST_ALLOCATEMDL:
-		
+		status = IoAllocateMdlTest(Irp);
+		if (NT_SUCCESS(status)) {
+			len = sizeof PMDL;
+		}
 		break;
 
 	case IOCTL_MEMTEST_ALLOCMAPADDR:
-
+		status = MmAllocateMappingAddressTest(Irp);
 		break;
 
 	case IOCTL_MEMTEST_ALLOCPAGESMDL:
-
+		status = MmAllocatePagesForMdlExTest(Irp);
+		if (NT_SUCCESS(status)) {
+			len = sizeof PMDL;
+		}
 		break;
 
 	case IOCTL_MEMTEST_CALLPAGEABLE:
-
+		status = PageableFunction(DeviceObject, Irp);
 		break;
 
 	case IOCTL_MEMTEST_FREEMAPADDR:
-
+		status = MmFreeMappingAddressTest(Irp);
 		break;
 
 	case IOCTL_MEMTEST_FREEMDL:
-
+		status = IoFreeMdlTest(Irp);
 		break;
 
 	case IOCTL_MEMTEST_FREEPAGESMDL:
-
+		status = MmFreePagesFromMdlTest(Irp);
 		break;
 
 	case IOCTL_MEMTEST_KMEMTOUCH:
-
+		status = KmemTouchTest(Irp);
 		break;
 
 	case IOCTL_MEMTEST_LOCKPAGEABLE:
-
+		status = LockPagFunTest();
 		break;
 
 	case IOCTL_MEMTEST_MAPLOCKPAGES:
-
+		status = MmMapLockedPagesSpecifyCacheTest(Irp);
+		if (NT_SUCCESS(status)) {
+			len = sizeof PVOID;
+		}
 		break;
 
 	case IOCTL_MEMTEST_MAPLPAGESRESMAP:
-
+		status = MmMapLockedPagesWithReservedMappingTest(Irp);
+		if (NT_SUCCESS(status)) {
+			len = sizeof PVOID;
+		}
 		break;
 
 	case IOCTL_MEMTEST_MDL_FOR_USER_BUFFER:
-
+		status = MdlForUserBufferTest(Irp);
 		break;
 
 	case IOCTL_MEMTEST_PROBEANDLOCK:
-
+		status = MmProbeAndLockPagesTest(Irp);
 		break;
 
 	case IOCTL_MEMTEST_UNLOCKPAGEABLE:
-
+		status = UnlockPagFunTest(DeviceObject, Irp);
 		break;
 
 	case IOCTL_MEMTEST_UNLOCKPAGES:
-
+		status = MmUnlockPagesTest(Irp);
 		break;
 
 	case IOCTL_MEMTEST_UNMAPLOCKPAG:
-
+		status = MmUnmapLockedPagesTest(Irp);
 		break;
 
 	case IOCTL_MEMTEST_UNMAPRESMAP:
-
+		status = MmUnmapReservedMappingTest(Irp);
 		break;
 
 	default:
