@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{f44fae01-07c7-463c-a141-9f66630bc69d}</ProjectGuid>
-    <RootNamespace>MemTests</RootNamespace>
+    <ProjectGuid>{e13aa400-21d8-414e-8d51-9c3de60c8364}</ProjectGuid>
+    <RootNamespace>MemColls</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -141,10 +141,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="MemTests.cpp" />
+    <ClCompile Include="MemColls.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MemTests.h" />
+    <ClInclude Include="MemColls.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

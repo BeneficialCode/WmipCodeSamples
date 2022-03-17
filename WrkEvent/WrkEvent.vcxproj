@@ -35,17 +35,17 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{CD110D6B-2F84-4C39-8A36-A9BBA2A86D70}</ProjectGuid>
+    <ProjectGuid>{2F2D43A3-6D77-48B1-8982-624FA0459E10}</ProjectGuid>
     <TemplateGuid>{dd38f7fc-d7bd-488b-9242-7d8754cde80d}</TemplateGuid>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <MinimumVisualStudioVersion>12.0</MinimumVisualStudioVersion>
     <Configuration>Debug</Configuration>
     <Platform Condition="'$(Platform)' == ''">Win32</Platform>
-    <RootNamespace>KrnlAllocs</RootNamespace>
+    <RootNamespace>WrkEvent</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <TargetVersion>Windows7</TargetVersion>
+    <TargetVersion>Windows10</TargetVersion>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>WindowsKernelModeDriver10.0</PlatformToolset>
     <ConfigurationType>Driver</ConfigurationType>
@@ -117,7 +117,6 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
-    <EnableInf2cat>false</EnableInf2cat>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
@@ -135,20 +134,20 @@
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
   </PropertyGroup>
   <ItemGroup>
-    <Inf Include="KrnlAllocs.inf" />
+    <Inf Include="WrkEvent.inf" />
   </ItemGroup>
   <ItemGroup>
     <FilesToPackage Include="$(TargetPath)" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DrvMain.cpp" />
-    <ClCompile Include="Logging.cpp" />
-    <ClCompile Include="KrnlAllocs.cpp" />
+    <ClInclude Include="DrvR3.h" />
+    <ClInclude Include="Logging.h" />
+    <ClInclude Include="WrkEvent.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="KaDrvR3.h" />
-    <ClInclude Include="Logging.h" />
-    <ClInclude Include="KrnlAllocs.h" />
+    <ClCompile Include="DrvMain.cpp" />
+    <ClCompile Include="Logging.cpp" />
+    <ClCompile Include="WrkEvent.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

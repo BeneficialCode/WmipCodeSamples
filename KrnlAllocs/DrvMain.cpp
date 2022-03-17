@@ -1,7 +1,7 @@
 #include <ntddk.h>
 #include "KaDrvR3.h"
 #include "Logging.h"
-#include "MemTest.h"
+#include "KrnlAllocs.h"
 
 
 DRIVER_UNLOAD DriverUnload;

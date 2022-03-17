@@ -60,8 +60,24 @@ WCHAR g_cmd;
 
 
 int main(){
-    
+	InitStatus();
+	g_bExit = false;
+	while (!g_bExit) {
+		wprintf(L"\n\n");
+		PrintStatus();
+		wprintf(L"\n");
+		PrintMenu();
+		wprintf(L"\n");
+		g_cmd = getwchar();
+		ProcessOption();
+		if (!g_bExit) {
+			wprintf(L"\nany key to return to main menu...");
+			int dummy = getwchar();
+		}
+	}
+	ReleaseAll();
 }
+
 
 BOOL AccessRegion(PVOID regionStart, PVOID regionEnd) {
 	bool bRet = false;
