@@ -2129,7 +2129,7 @@ void PrintPagStructAddrs(PBYTE start, SIZE_T size) {
 	// PD
 	pFirstPs = VA_TO_PS_ADDR(pStart, 18, PDE_RANGE_START);
 	pLastPs = VA_TO_PS_ADDR(pLastPage, 18, PDE_RANGE_START);
-	wprintf(L"\nPDE - first: %#p, last: %$p", pFirstPs, pLastPs);
+	wprintf(L"\nPDE - first: %#p, last: %#p", pFirstPs, pLastPs);
 	
 	// PT
 	pFirstPs = VA_TO_PS_ADDR(pStart, 9, PTE_RANGE_START);
