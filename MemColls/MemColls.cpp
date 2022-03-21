@@ -396,6 +396,9 @@ bool StartDecommit(PVOID pStart, SIZE_T length) {
         SetLastError(error);
         return false;
     }
+    pDecommit->hHeap = hHeap; // Heap handle passed to the new thread which will free the memory
+    pDecommit->Start = pStart;
+    pDecommit->Size = length;
     bool bRet;
     if (!CreateThrWr(DecommitMemroy, pDecommit)) {
         error = GetLastError();

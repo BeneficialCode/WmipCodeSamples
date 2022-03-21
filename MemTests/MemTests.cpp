@@ -26,10 +26,11 @@ Copyright (c), 2012 by Enrico Martignetti - All rights reserved.
 #define PDPTE_RANGE_START   0xFFFFF6FB7DA00000
 #define PTE_RANGE_START     0xFFFFF68000000000
 
-#define BYTE_PTR_SHIFT(lpByte,Shift)    ((PBYTE) ((DWORD_PTR) lpByte >> Shift))
+#define BYTE_PTR_SHIFT(lpByte, Shift)		((PBYTE) ((DWORD_PTR) lpByte >> Shift))
 
 // Shift: 27 for PDPTE, 18 for PD, 9 for PT
-#define VA_TO_PS_ADDR(lpVa,Shift,Range) (((lpVa >> Shift) + Range) & 0xfffffffffffffff8);
+// Range: PxE range start
+#define VA_TO_PS_ADDR(lpVa, Shift, Range)			(((lpVa >> Shift) + Range) & 0xfffffffffffffff8);
 
 #ifndef STATUS_SUCCESS
 #define STATUS_SUCCESS  ((NTSTATUS)0x00000000L)
@@ -71,6 +72,8 @@ int main(){
 		g_cmd = getwchar();
 		ProcessOption();
 		if (!g_bExit) {
+			// drain stdin
+			while (getwc(stdin) != L'\n') {}
 			wprintf(L"\nany key to return to main menu...");
 			int dummy = getwchar();
 		}
@@ -1118,11 +1121,7 @@ BOOL GetValue(const wchar_t* const format, PVOID value, BOOL bDefault) {
 		default:
 			if (!wscanf_s(format, value)) {
 				wprintf(L"\nInvalid value,reenter: ");
-				WCHAR c;
-				do
-				{
-					int ret = wscanf_s(L"%c", &c);
-				} while (true);
+				int ret = wscanf_s(L"%c", &ch);
 				continue;
 			}
 			return true;
@@ -2134,7 +2133,7 @@ void PrintPagStructAddrs(PBYTE start, SIZE_T size) {
 	// PT
 	pFirstPs = VA_TO_PS_ADDR(pStart, 9, PTE_RANGE_START);
 	pLastPs = VA_TO_PS_ADDR(pLastPage, 9, PTE_RANGE_START);
-	wprintf(L"\nPTE - first: %#p, last: %#p", pFirstPs, pLastPage);
+	wprintf(L"\nPTE - first: %#p, last: %#p", pFirstPs, pLastPs);
 }
 
 void PrintStatus() {
@@ -2609,7 +2608,7 @@ bool VirtAllocTest(PVOID address, SIZE_T size, DWORD allocationType,
 	*ppStart = pMem;
 	*ppEnd = (PBYTE)pMem + size;
 	wprintf(L"\n\nstarting address = %#p", *ppStart);
-	wprintf(L"\n\nending address = %#p", *ppEnd);
+	wprintf(L"\n\nending address = %#p", (UINT_PTR)*ppEnd - 1);
 	return true;
 }
 
