@@ -104,6 +104,7 @@ BOOL AccessRegion(PVOID regionStart, PVOID regionEnd) {
 			break;
 		}
 		pEndLocal = (PBYTE)regionEnd;
+		wprintf(L"\n\nend address = [%#p]", pEndLocal);
 		if (!GetValue(L"%I64i", &pEndLocal, TRUE)) {
 			break;
 		}
