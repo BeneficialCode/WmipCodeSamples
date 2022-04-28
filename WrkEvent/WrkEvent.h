@@ -3,7 +3,7 @@
 
 
 // Number of elements of the events arrary
-#define EVENT_COUNT 3
+#define EVENT_COUNT 5
 
 struct DeviceExtension {
 	PDEVICE_OBJECT DeviceObject;
