@@ -2,7 +2,8 @@
 #include "DrvR3.h"
 #include "Logging.h"
 
-
+PKeSignalGateBoostPriority g_pKeSignalGateBoostPriority = nullptr;
+PKeInitializeGate g_pKeInitializeGate = nullptr;
 
 NTSTATUS CompleteIrp(PIRP Irp, NTSTATUS status, ULONG info) {
 	Irp->IoStatus.Status = status;
@@ -25,12 +26,12 @@ NTSTATUS ClearEvent(DeviceExtension* pDevExt, PIRP Irp) {
 }
 
 void PrintObjAddresses(DeviceExtension* pDevExt) {
-	LogInfo("Object addresses: ");
+	LogInfo("Object addresses: \n");
 	for (int i = 0; i < sizeof pDevExt->EventV / sizeof(KEVENT); i++) {
-		LogInfo("WrkEvent[%i] address: %#p", i,&(pDevExt->EventV[i]));
+		LogInfo("WrkEvent[%i] address: %#p\n", i,&(pDevExt->EventV[i]));
 	}
-	LogInfo("Ev ptr array address: %#p", pDevExt->EventPtrsV);
-	LogInfo("Gate address %#p", &(pDevExt->Gate));
+	LogInfo("Ev ptr array address: %#p\n", pDevExt->EventPtrsV);
+	LogInfo("Gate address %#p\n", &(pDevExt->Gate));
 }
 
 NTSTATUS SignalEvent(DeviceExtension* pDevExt, PIRP Irp) {

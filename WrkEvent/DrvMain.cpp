@@ -24,6 +24,8 @@ Copyright (c), 2012 by Enrico Martignetti - All rights reserved.
 DRIVER_UNLOAD DriverUnload;
 DRIVER_DISPATCH DriverCreate, DriverClose, DriverDeviceControl;
 
+extern PKeSignalGateBoostPriority g_pKeSignalGateBoostPriority;
+extern PKeInitializeGate g_pKeInitializeGate;
 
 extern "C" NTSTATUS
 DriverEntry(_In_ PDRIVER_OBJECT DriverObject, _In_ PUNICODE_STRING RegistryPath) {
@@ -32,9 +34,9 @@ DriverEntry(_In_ PDRIVER_OBJECT DriverObject, _In_ PUNICODE_STRING RegistryPath)
 	LogInfo("WrkEvent - Work event driver, compiled %s %s\n", __DATE__, __TIME__);
 	
 	PCHAR pKeSetEvent = (PCHAR)&KeSetEvent;
-	g_pKeSignalGateBoostPriority = (PKeInitializeGate)(pKeSetEvent - KE_SIGNAL_GATE_BOOST_PRIORITY_OFFSET);
+	g_pKeSignalGateBoostPriority = (PKeSignalGateBoostPriority)(pKeSetEvent - KE_SIGNAL_GATE_BOOST_PRIORITY_OFFSET);
 	g_pKeInitializeGate = (PKeInitializeGate)(pKeSetEvent - KE_INITIALIZE_GATE_OFFSET);
-
+	
 	DriverObject->DriverUnload = DriverUnload;
 	DriverObject->MajorFunction[IRP_MJ_CREATE] = DriverCreate;
 	DriverObject->MajorFunction[IRP_MJ_CLOSE] = DriverClose;
