@@ -20,7 +20,7 @@ NTSTATUS ClearEvent(DeviceExtension* pDevExt, PIRP Irp) {
 	UINT32 index = *((UINT32*)Irp->AssociatedIrp.SystemBuffer);
 	if (index >= sizeof pDevExt->EventV / sizeof KEVENT)
 		return STATUS_INVALID_PARAMETER;
-	LogInfo("Clearing event #%d", index);
+	LogInfo("Clearing event #%d\n", index);
 	KeClearEvent(&(pDevExt->EventV[index]));
 	return STATUS_SUCCESS;
 }
@@ -42,13 +42,13 @@ NTSTATUS SignalEvent(DeviceExtension* pDevExt, PIRP Irp) {
 	if (index > sizeof pDevExt->EventV / sizeof KEVENT) {
 		return STATUS_INVALID_PARAMETER;
 	}
-	LogInfo("Signaling event %#d", index);
+	LogInfo("Signaling event %#d\n", index);
 	KeSetEvent(&(pDevExt->EventV[index]), 0, FALSE);
 	return STATUS_SUCCESS;
 }
 
 NTSTATUS SignalGate(DeviceExtension* pDevExt) {
-	LogInfo("Signaling the gate");
+	LogInfo("Signaling the gate\n");
 	g_pKeSignalGateBoostPriority(&pDevExt->Gate);
 	return STATUS_SUCCESS;
 }
