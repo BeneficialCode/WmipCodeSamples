@@ -805,8 +805,144 @@ BOOL FileMappingTestInterface() {
 			L"mf")) {
 			break;
 		}
+
+		if (ch == L'm') {
+			hFileToMap = INVALID_HANDLE_VALUE;
+		}
+		else if (ch == L'f') {
+			// if no file is open, create or open one
+			if (g_hFile == INVALID_HANDLE_VALUE) {
+				ch = L'o';
+				wprintf(L"\n");
+				if (!GetKey(&ch, L"c - createfile, o - open file", TRUE, L":", L"co"))
+					break;
+				if (ch == L'c') {
+					if (!FileCreateInterface()) {
+						error = GetLastError();
+						bRet = false;
+						break;
+					}
+					if (GetLastError() == ERROR_CANCELLED)
+						break;
+				}
+				else if(ch == L'o') {
+					if (!OpenFileInterface()) {
+						error = GetLastError();
+						bRet = false;
+						break;
+					}
+					if (GetLastError() == ERROR_CANCELLED)
+						break;
+				}
+			}
+			hFileToMap = g_hFile;
+		}
+
+		DWORD mapProt = PAGE_READWRITE;
+		wprintf(L"\nmap protection [0x%x]:", mapProt);
+		wprintf(L"\n"
+			L"		PAGE_READONLY			= 0x%x", PAGE_READONLY);
+		wprintf(L"\n"
+			L"		PAGE_READWRITE			= 0x%x", PAGE_READWRITE);
+		wprintf(L"\n"
+			L"		PAGE_WRITECOPY			= 0x%x", PAGE_WRITECOPY);
+		wprintf(L"\n"
+			L"		PAGE_EXECUTE_READ		= 0x%x", PAGE_EXECUTE_READ);
+		wprintf(L"\n"
+			L"		PAGE_EXECUTE_READWRITE	= 0x%x", PAGE_EXECUTE_READWRITE);
+		wprintf(L"\n"
+			L"		PAGE_EXECUTE_WRITECOPY	= 0x%x", PAGE_EXECUTE_WRITECOPY);
+		wprintf(L"\n"
+			L"		SEC_IMAGE				= 0x%x", SEC_IMAGE);
+		wprintf(L"\n"
+			L"		SEC_LARGE_LAGES			= 0x%x", SEC_LARGE_PAGES);
+		wprintf(L"\n"
+			L"		SEC_COMMIT				= 0x%x", SEC_COMMIT);
+		wprintf(L"\n");
+		if (!GetValue(L"%i", &mapProt, true))
+			break;
+
+		SIZE_T mapSize;
+		wprintf(L"\nMap size: ");
+		if (!GetValue(L"%I64i", &mapSize, false))
+			break;
+
+		wcscpy_s(g_mappingName, sizeof g_mappingName / sizeof g_mappingName[0], L"map");
+		wprintf(L"\nmapping name [%s]:", g_mappingName);
+		if (!GetValue(L"%s", g_mappingName, true))
+			break;
+		g_mappingName[sizeof g_mappingName / sizeof g_mappingName[0] - 1] = L'\0';
+
+		DWORD viewAcc = FILE_MAP_READ | FILE_MAP_WRITE;
+		wprintf(L"\nView Access [0x%x]:", viewAcc);
+		wprintf(L"\n"
+			L"    FILE_MAP_ALL_ACCESS = 0x%x", FILE_MAP_ALL_ACCESS);
+		wprintf(L"\n"
+			L"    FILE_MAP_COPY       = 0x%x", FILE_MAP_COPY);
+		wprintf(L"\n"
+			L"    FILE_MAP_EXECUTE    = 0x%x", FILE_MAP_EXECUTE);
+		wprintf(L"\n"
+			L"    FILE_MAP_READ       = 0x%x", FILE_MAP_READ);
+		wprintf(L"\n"
+			L"    FILE_MAP_WRITE      = 0x%x", FILE_MAP_WRITE);
+		wprintf(L"\n");
+		if (!GetValue(L"%i", &viewAcc, true))
+			break;
+
+		LONGLONG value = 0;
+		DWORD offHigh, offLow;
+		wprintf(L"\noffset [0x%I64x]:", value);
+		if (!GetValue(L"%I64i", &value, true))
+			break;
+		offHigh = (DWORD)(value >> 32);
+		offLow = (DWORD)value;
+
+		SIZE_T size = 0;
+		wprintf(L"\nview size [0x%I64x]:", size);
+		if (!GetValue(L"%I64i", &size, true))
+			break;
+
+		bool bExplicitNumaNode = false;
+		DWORD numaNode = 0;
+		wprintf(L"\n");
+		ch = L'n';
+		if (!GetKey(&ch, L"sepcify NUMA node", true, L"?", L"yn"))
+			break;
+		if (ch == L'y') {
+			bExplicitNumaNode = true;
+			wprintf(L"\nNuma node: ");
+			if (!GetValue(L"%d", &numaNode, false))
+				break;
+		}
+		else if (ch == L'n') {
+			bExplicitNumaNode = false;
+			break;
+		}
+
+		if (!FileMappingTest(
+			hFileToMap,
+			mapProt,
+			&mapSize,
+			viewAcc,
+			offLow,
+			offHigh,
+			&size,
+			bExplicitNumaNode,
+			numaNode,
+			g_mappingName,
+			&g_pMappedRegionStart,
+			&g_hFileMapping
+		)) {
+			bRet = false;
+			error = GetLastError();
+			break;
+		}
+		g_pMappedRegionEnd = (PBYTE)g_pMappedRegionStart + size;
+		error = ERROR_SUCCESS;
 	} while (false);
 	
+	
+
 	SetLastError(error);
 	return bRet;
 }
