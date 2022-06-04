@@ -539,7 +539,10 @@ BOOL FileMappingTest(HANDLE hFileToMap, DWORD mapProtect, PULONGLONG pMapSize,
 	wprintf(L"\nhFileToMap		= %x", HandleToUlong(hFileToMap));
 	wprintf(L"\nMapProtect		= 0x%x", mapProtect);
 	wprintf(L"\nMapSize			= 0x%I64x", *pMapSize);
-	wprintf(L"\nMappingName		= %s", mappingName);
+	if (mappingName != nullptr)
+		wprintf(L"\nMappingName		= %s", mappingName);
+	else
+		wprintf(L"\nAnonymous MappingName");
 	wprintf(L"\nViewAccess      = 0x%x", viewAccess);
 	wprintf(L"\nOffsetHigh		= 0x%x", offsetHigh);
 	wprintf(L"\nViewSize		= 0x%I64x", *pViewSize);
@@ -867,11 +870,22 @@ BOOL FileMappingTestInterface() {
 		if (!GetValue(L"%I64i", &mapSize, false))
 			break;
 
-		wcscpy_s(g_mappingName, sizeof g_mappingName / sizeof g_mappingName[0], L"map");
-		wprintf(L"\nmapping name [%s]:", g_mappingName);
-		if (!GetValue(L"%s", g_mappingName, true))
+		ch = L'y';
+		if (!GetKey(&ch, L"sepcify the name", true, L"?", L"yn"))
 			break;
-		g_mappingName[sizeof g_mappingName / sizeof g_mappingName[0] - 1] = L'\0';
+		bool bAnonymous = false;
+		if (ch == L'y') {
+			wcscpy_s(g_mappingName, sizeof g_mappingName / sizeof g_mappingName[0], L"map");
+			wprintf(L"\nmapping name [%s]:", g_mappingName);
+			if (!GetValue(L"%s", g_mappingName, true))
+				break;
+			g_mappingName[sizeof g_mappingName / sizeof g_mappingName[0] - 1] = L'\0';
+		}
+		else if (ch == L'n') {
+			bAnonymous = true;
+		}
+
+		
 
 		DWORD viewAcc = FILE_MAP_READ | FILE_MAP_WRITE;
 		wprintf(L"\nView Access [0x%x]:", viewAcc);
@@ -928,7 +942,7 @@ BOOL FileMappingTestInterface() {
 			&size,
 			bExplicitNumaNode,
 			numaNode,
-			g_mappingName,
+			bAnonymous?nullptr:g_mappingName,
 			&g_pMappedRegionStart,
 			&g_hFileMapping
 		)) {
