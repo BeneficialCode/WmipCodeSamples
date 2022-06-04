@@ -916,7 +916,6 @@ BOOL FileMappingTestInterface() {
 		}
 		else if (ch == L'n') {
 			bExplicitNumaNode = false;
-			break;
 		}
 
 		if (!FileMappingTest(
