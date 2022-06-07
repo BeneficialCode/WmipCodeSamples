@@ -492,7 +492,7 @@ BOOL FileCreateInterface() {
 	{
 		wcscpy_s(g_fileName, sizeof g_fileName / sizeof g_fileName[0],
 			L"memtests.tmp");
-		wprintf(L"file name [%s]: ", g_fileName);
+		wprintf(L"\nfile name [%s]: ", g_fileName);
 		if (!GetValue(L"%s", g_fileName, true)) {
 			break;
 		}
@@ -590,6 +590,12 @@ BOOL FileMappingTest(HANDLE hFileToMap, DWORD mapProtect, PULONGLONG pMapSize,
 			*pMapSize & 0xFFFFFFFF,
 			mappingName
 		);
+		if (*phMap == nullptr) {
+			error = GetLastError();
+			wprintf(L"\nCreateFileMapping() failed with GetLastError() = %d", error);
+			bRet = FALSE;
+			break;
+		}
 		wprintf(L"\nabout to map the view");
 		if (!ConfirmOper()) {
 			error = ERROR_CANCELLED;
@@ -1269,9 +1275,13 @@ BOOL GetValue(const wchar_t* const format, PVOID value, BOOL bDefault) {
 			return false;
 
 		default:
-			if (!wscanf_s(format, value)) {
+			if (!wscanf(format, value)) {
 				wprintf(L"\nInvalid value,reenter: ");
-				int ret = wscanf_s(L"%c", &ch);
+				WCHAR wch;
+				do
+				{
+					wscanf_s(L"%c", &wch);
+				} while (wch!=L'\n');
 				continue;
 			}
 			return true;
