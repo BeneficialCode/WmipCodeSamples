@@ -1043,7 +1043,7 @@ BOOL FileReadTest(HANDLE hFile, ULONGLONG offset, DWORD length) {
 		DWORD readSize;
 		DWORD remaining;
 		remaining = length;
-		wprintf(L"about to read the file");
+		wprintf(L"\nabout to read the file");
 		if (!ConfirmOper()) {
 			error = ERROR_CANCELLED;
 			break;
@@ -1093,6 +1093,7 @@ BOOL FileReadTestInterface() {
 		wprintf(L"\noffset [0x%I64x] = ", offset);
 		if (!GetValue(L"%I64i", &offset, true))
 			break;
+		wprintf(L"\nlength = ");
 		if (!GetValue(L"%i", &length, false))
 			break;
 		if (!FileReadTest(g_hFile, offset, length)) {
