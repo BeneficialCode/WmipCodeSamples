@@ -205,7 +205,7 @@ BOOL AddPrivilege(const wchar_t* priv) {
 			wprintf(L"\nGetTokenInformation() failed with GetLastError() = %d", error);
 			break;
 		}
-		pTokenUser = (PTOKEN_USER)::HeapAlloc(GetCurrentProcess(), 0, len);
+		pTokenUser = (PTOKEN_USER)::HeapAlloc(GetProcessHeap(), 0, len);
 		if (pTokenUser == nullptr) {
 			error = ERROR_NOT_ENOUGH_MEMORY;
 			wprintf(L"\nHeapAlloc() failed for allocation size = %d", len);
@@ -400,7 +400,7 @@ BOOL EnablePrivilege(const wchar_t* prvName) {
 			hToken,
 			FALSE,
 			&tp,
-			0,
+			sizeof(tp),
 			nullptr,
 			nullptr
 		)) {
