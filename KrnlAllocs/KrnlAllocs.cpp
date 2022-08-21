@@ -54,7 +54,7 @@ NTSTATUS IoAllocateMdlTest(PIRP Irp) {
 	// %#表示的输出提示方式，如果是8进制，在前面加0，
 	// 如果是十进制，不加任何字符，如果是十六进制，会加上0x
 	LogInfo("Allocated MDL at %#p\n", pMdl);
-	Irp->AssociatedIrp.SystemBuffer = pMdl;
+	*((PMDL*)Irp->AssociatedIrp.SystemBuffer) = pMdl;
 	status = STATUS_SUCCESS;
 	return status;
 }
@@ -325,7 +325,7 @@ NTSTATUS MmAllocatePagesForMdlExTest(PIRP Irp) {
 	}
 	LogInfo("MmAllocatePagesForMdlEx() allocated MDL at 0x%16p for %d bytes",
 		pMdl, MmGetMdlByteCount(pMdl));
-	Irp->AssociatedIrp.SystemBuffer = pMdl;
+	*((PMDL*)Irp->AssociatedIrp.SystemBuffer) = pMdl;
 	status = STATUS_SUCCESS;
 	return status;
 }

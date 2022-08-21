@@ -40,7 +40,7 @@ bool g_bExit;
 byte g_dummyByte;
 size_t g_size;
 AllMapAddr g_AllMapin;
-bool g_mdlLocked;
+bool g_mdlLocked = false;
 PVOID g_pMappedSystemRegion;
 
 // Address within the range described by g_AllMapin, at which
@@ -2028,7 +2028,7 @@ bool MmUnlockPagesTest() {
 			break;
 		}
 		if (pMdl == g_pMdl)
-			g_mdlLocked = true;
+			g_mdlLocked = false;
 		bRet = true;
 
 	} while (false);

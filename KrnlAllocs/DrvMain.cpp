@@ -112,6 +112,9 @@ NTSTATUS DriverDeviceControl(PDEVICE_OBJECT DeviceObject, PIRP Irp) {
 
 	case IOCTL_MEMTEST_ALLOCMAPADDR:
 		status = MmAllocateMappingAddressTest(Irp);
+		if (NT_SUCCESS(status)) {
+			len = sizeof AllMapAddr;
+		}
 		break;
 
 	case IOCTL_MEMTEST_ALLOCPAGESMDL:

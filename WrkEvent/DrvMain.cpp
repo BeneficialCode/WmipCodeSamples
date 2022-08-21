@@ -119,7 +119,7 @@ _Use_decl_annotations_
 NTSTATUS DriverDeviceControl(PDEVICE_OBJECT DeviceObject, PIRP Irp) {
 	NTSTATUS status = STATUS_SUCCESS;
 	ULONG len = 0;
-
+	
 	auto& dic = IoGetCurrentIrpStackLocation(Irp)->Parameters.DeviceIoControl;
 	DeviceExtension* pDevExt = (DeviceExtension*)DeviceObject->DeviceExtension;
 	switch (dic.IoControlCode)
