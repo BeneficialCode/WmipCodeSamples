@@ -100,12 +100,12 @@ BOOL AccessRegion(PVOID regionStart, PVOID regionEnd) {
 		}
 		pStart = (PBYTE)regionStart;
 		wprintf(L"\n\nstart address = [%#p]", pStart);
-		if (!GetValue(L"%I64i", &pStart, TRUE)) {
+		if (!GetValue(L"%p", &pStart, TRUE)) {
 			break;
 		}
 		pEndLocal = (PBYTE)regionEnd;
 		wprintf(L"\n\nend address = [%#p]", pEndLocal);
-		if (!GetValue(L"%I64i", &pEndLocal, TRUE)) {
+		if (!GetValue(L"%p", &pEndLocal, TRUE)) {
 			break;
 		}
 		wprintf(L"\nabout to %s from %#p to %#p",
@@ -1421,10 +1421,17 @@ bool KMemTouchTest() {
 			break;
 		}
 
+		data.Start = g_pMappedSystemRegion;
+		wprintf(L"\nStart address [0x%16p]", data.Start);
+		if (!GetValue(L"%p", &data.Start, true)) {
+			bRet = true;
+			break;
+		}
+
 		data.Length = 0x1000;
 		wprintf(L"\nLength [0x%I64x]", data.Length);
 		if (!GetValue(
-			const_cast<PWSTR>(L"%I64i"), &data.Start, true)) {
+			const_cast<PWSTR>(L"%I64i"), &data.Length, true)) {
 			bRet = true;
 			break;
 		}
@@ -1890,7 +1897,7 @@ bool MmMapLockedPagesWithReservedMappingTest() {
 
 		data.Mdl = g_pMdl;
 		wprintf(L"\nMDL address [%p]", data.Mdl);
-		if (!GetValue(L"%I64i", &data.Mdl, true)) {
+		if (!GetValue(L"%p", &data.Mdl, true)) {
 			break;
 		}
 
@@ -2864,7 +2871,7 @@ bool VirtProtTestInterface() {
 	{
 		PVOID pAddress;
 		wprintf(L"\naddress: ");
-		if (!GetValue(L"%I64i", &pAddress, FALSE))
+		if (!GetValue(L"%p", &pAddress, FALSE))
 			break;
 
 		SIZE_T	size;
